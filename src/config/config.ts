@@ -1,9 +1,10 @@
-import queries from './queries'
+import queries from './queries';
 
 const config = {
   productQueries: queries,
   puppeteer: {
-    devtools: process.env.DEBUG === 'true'
+    devtools: process.env.DEBUG === 'true',
+    dumpio: true,
   },
   /**
    * Every how often we crawl all pages
@@ -20,8 +21,8 @@ const config = {
     navigationTimeout: 10 * 1000,
     screenshotViewport: {
       width: 1280,
-      height: 1024
-    }
+      height: 1024,
+    },
   },
   email: {
     from: process.env.EMAIL_FROM,
@@ -32,16 +33,16 @@ const config = {
       secure: false, // upgrade later with STARTTLS
       auth: {
         user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASSWORD
-      }
-    }
+        pass: process.env.EMAIL_PASSWORD,
+      },
+    },
   },
   persistance: {
     /**
      * Storage is relative to the project root folder
      */
-    path: './.storage'
-  }
-}
+    path: './.storage',
+  },
+};
 
-export default config
+export default config;

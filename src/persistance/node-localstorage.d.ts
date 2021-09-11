@@ -1,11 +1,11 @@
 declare module 'node-localstorage' {
   interface LocalStorageClass {
-    new (location: string, quota?: number): Storage
+    new (location: string, quota?: number): Storage;
   }
 
   let exports: {
-    LocalStorage: LocalStorageClass
-  }
+    LocalStorage: LocalStorageClass;
+  };
 
-  export = exports
+  export = exports;
 }
