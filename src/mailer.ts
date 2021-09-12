@@ -1,13 +1,13 @@
 import nodemailer from 'nodemailer';
 import { SentMessageInfo } from 'nodemailer/lib/smtp-transport';
-import configType from './config/config';
+import configType from './config';
 
 export interface EmailAttachment {
   content: Buffer;
   name: string;
 }
 
-const send = (
+const sendEmail = (
   config: typeof configType.email,
   subject: string,
   description: string,
@@ -25,4 +25,4 @@ const send = (
   });
 };
 
-export default send;
+export default sendEmail;

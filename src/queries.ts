@@ -26,15 +26,25 @@ type Query = {
 
 export type Price = Query['price'];
 
-const productQueries: Query[] = [
+const productsQueries: Query[] = [
   // Ultrawide monitors
   {
     label: 'LG UltraGear 38GN950-B',
     query: 'https://www.amazon.fr/s?k=lg+38gn950-b&i=warehouse-deals&ref=nb_sb_ss_ts-doa-p_4_5',
     price: {
-      below: 1100,
+      below: 1000,
     },
     skuNameMatch: ['B086C3FZ3X'],
+    renotifyOnLowerPrice: true,
+  },
+  {
+    label: 'LG UltraGear 34GN850-B',
+    query:
+      'https://www.amazon.fr/s?k=lg+34gn850-b&i=warehouse-deals&__mk_fr_FR=%C3%85M%C3%85%C5%BD%C3%95%C3%91&ref=nb_sb_noss',
+    price: {
+      below: 650,
+    },
+    skuNameMatch: ['B0864GCQPL'],
     renotifyOnLowerPrice: true,
   },
   // Mouse
@@ -50,4 +60,4 @@ const productQueries: Query[] = [
   },
 ];
 
-export default productQueries;
+export default productsQueries;

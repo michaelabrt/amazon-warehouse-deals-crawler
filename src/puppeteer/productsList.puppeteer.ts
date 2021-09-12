@@ -1,6 +1,6 @@
 import puppeteer from 'puppeteer';
-import config from '../config/config';
-import { isInRange as isPriceInRange, parseDisplayPrice } from '../pricing/price';
+import config from '../config';
+import { isInRange as isPriceInRange, parseDisplayPrice } from '../helpers/price.helpers';
 
 type Item = {
   link: string;

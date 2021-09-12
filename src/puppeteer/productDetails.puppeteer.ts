@@ -1,7 +1,7 @@
 import puppeteer from 'puppeteer';
-import config from '../config/config';
-import sendEmail from '../email';
-import { isInRange as isPriceInRange, parseDisplayPrice } from '../pricing/price';
+import config from '../config';
+import sendEmail from '../mailer';
+import { isInRange as isPriceInRange, parseDisplayPrice } from '../helpers/price.helpers';
 
 export interface Item {
   seller: string;

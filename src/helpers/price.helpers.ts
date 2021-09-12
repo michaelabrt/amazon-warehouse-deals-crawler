@@ -1,4 +1,4 @@
-import { Price } from '../config/queries';
+import { Price } from '../queries';
 
 const poundToEuroConversion = 1.17;
 

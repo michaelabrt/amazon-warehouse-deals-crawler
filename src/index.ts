@@ -1,10 +1,10 @@
 import puppeteer from 'puppeteer';
 import { from, timer, catchError, concatMap, delay, filter, finalize, map, mergeMap, reduce, tap } from 'rxjs';
-import config from './config/config';
-import log from './logging/log';
-import { flagAsSent, hasBeenSent, storageCount } from './persistance/storage';
-import { ISendItemWithSku, Item, processProductDetail, sendItems } from './processor/productDetails';
-import processQuery from './processor/query';
+import config from './config';
+import log from './logger';
+import { flagAsSent, hasBeenSent, storageCount } from './helpers/storage.helpers';
+import { ISendItemWithSku, Item, processProductDetail, sendItems } from './puppeteer/productDetails.puppeteer';
+import processQuery from './puppeteer/productsList.puppeteer';
 
 log.banner('===========================================');
 log.banner('===== Amazon Warehouse Deals Crawler ======');
