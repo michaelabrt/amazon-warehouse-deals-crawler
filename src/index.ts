@@ -37,19 +37,16 @@ timer(0, config.crawler.interval)
                 ),
                 mergeMap((products) => from(products)),
                 mergeMap((product) =>
-                  from(processProductDetail(data.browser)(product.link, data.query))
-                    //
-                    .pipe(
-                      //
-                      filter((d): d is { item: Item; page: puppeteer.Page } => !!d.item),
-                      map(({ item, page }) => ({
-                        ...item,
-                        page,
-                        url: product.link,
-                        title: product.title,
-                        sku: product.sku,
-                      }))
-                    )
+                  from(processProductDetail(data.browser)(product.link, data.query)).pipe(
+                    filter((d): d is { item: Item; page: puppeteer.Page } => !!d.item),
+                    map(({ item, page }) => ({
+                      ...item,
+                      page,
+                      url: product.link,
+                      title: product.title,
+                      sku: product.sku,
+                    }))
+                  )
                 )
               )
           ),

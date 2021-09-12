@@ -13,7 +13,7 @@ type ItemNullable = { [k in keyof Item]: Item[k] | null };
 
 type ItemNullableWithStringPrice = Pick<ItemNullable, 'link' | 'title'> & { price: string | null };
 
-const isNotNull = (i: Item | ItemNullable): i is Item => i.link !== null && i.title !== null && i.price !== null;
+const isNotNull = (i: Item | ItemNullable): i is Item => !!(i.link && i.title && i.price);
 
 const matchesName = (title: string, mustContain: string[]) =>
   mustContain.map((m) => m.toLowerCase()).some((m) => title.toLowerCase().indexOf(m) !== -1);
@@ -26,17 +26,18 @@ const processQuery =
 
     // page.evaluate will execute code within browser, so interface is via serializable results only
     const extractedItems: ItemNullableWithStringPrice[] = await page.evaluate(() => {
-      const itemsAsNodes = document.querySelectorAll('#atfResults .s-item-container');
+      const itemsAsNodes = document.querySelectorAll("div[data-component-type='s-search-result']");
       const items: Element[] = Array.from(itemsAsNodes);
-      console.log(items);
+
       return items.map((item) => {
-        const link = item.querySelector('.a-size-mini.a-link-normal.a-text-normal');
-        const title = item.querySelector('a.s-access-detail-page .s-access-title');
-        const price = item.querySelector('.a-color-price');
+        const href = item.querySelector('h2.a-size-mini > a')?.getAttribute('href');
+        const link = href ? `https://www.amazon.fr${href}` : null;
+        const title = item.getAttribute('data-asin');
+        const price = item.querySelector('div.a-row > span.a-color-base');
 
         return {
-          link: link && link.getAttribute('href'),
-          title: title && title.getAttribute('data-attribute'),
+          link,
+          title,
           price: price && price.textContent,
         };
       });
@@ -50,7 +51,7 @@ const processQuery =
         sku: link ? extractProductSkuFromUrl(link) : '',
       }))
       .filter(isNotNull)
-      .filter((x) => product.skuNameMatch === undefined || matchesName(x.title, product.skuNameMatch))
+      .filter((x) => !product.skuNameMatch || matchesName(x.title, product.skuNameMatch))
       .filter((x) => x.sku.length > 0)
       .filter((x) => isPriceInRange(x.price, product.price));
   };

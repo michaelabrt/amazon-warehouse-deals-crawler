@@ -29,21 +29,21 @@ const cheapestWarehouseDealItem = (
   items: ItemNullableWithStringPrice[],
   product: typeof config.productQueries[0],
   priceParser: ReturnType<typeof parseDisplayPrice>
-): Item | undefined =>
-  items
+): Item | undefined => {
+  return items
     .map(({ condition, seller, price }) => ({
       seller,
       condition,
       price: price ? priceParser(price) : null,
     }))
     .filter(isNotNull)
-    .filter((x) => ['Warehouse Deals', 'Amazon Warehouse Deals', 'Amazon'].indexOf(x.seller) !== -1)
+    .filter((x) => ['Amazon Warehouse', 'Amazon', 'Amazon Warehouse Deals'].indexOf(x.seller) !== -1)
     .filter((x) => isPriceInRange(x.price, product.price))
     .sort((x, y) => x.price - y.price)[0];
+};
 
 export const sendItems = async (items: ISendItem[]) => {
   const attachments = [];
-
   for (const item of items) {
     await item.page.setViewport(config.crawler.screenshotViewport);
     const screenshot = await item.page.screenshot();
@@ -55,9 +55,9 @@ export const sendItems = async (items: ISendItem[]) => {
   }
 
   const description = items.reduce(
-    (acc, item) => `${acc} 
-    <h4><a href="${item.url}">${item.title}</a> €${item.price}</h4>
-    Condition: ${item.condition}
+    (acc, { condition, price, title, url }) => `${acc} 
+    <h4><a href="${url}">${title}</a> €${price}</h4>
+    Condition: ${condition}
     <br/><br/>
   `,
     ''
@@ -80,20 +80,25 @@ export const processProductDetail =
   ): Promise<{ item: Item | undefined; page: puppeteer.Page }> => {
     const page = await browser.newPage();
     await page.goto(url);
+    await page.waitForSelector('.olp-touch-link');
+    const offersLink = await page.$('.olp-touch-link');
+    const href = await page.evaluate((offersLink) => offersLink.getAttribute('href'), offersLink);
+    await page.goto(`https://www.amazon.fr${href}`);
+    await page.waitForSelector('#aod-offer-list');
 
     // page.evaluate will execute code within browser, so interface is via serializable results only
     const extractedItems: ItemNullableWithStringPrice[] = await page.evaluate(() => {
-      const items = Array.from(document.querySelectorAll('.olpOffer'));
+      const items = Array.from(document.querySelectorAll('#aod-offer'));
 
       return items.map((item) => {
-        const sellerName = item.querySelector('.a-spacing-none.olpSellerName img');
-        const price = item.querySelector('.olpOfferPrice');
-        const condition = item.querySelector('.olpCondition');
+        const sellerName = item.querySelector('#aod-offer-soldBy a');
+        const price = item.querySelector('.a-price-whole');
+        const condition = item.querySelector('.expandable-expanded-text');
 
         return {
-          seller: sellerName?.getAttribute('alt') || null,
-          price: price?.textContent || null,
-          condition: condition?.textContent?.replace('\n', '') || null,
+          seller: sellerName?.textContent?.replace(/\n/g, '') || null,
+          price: price?.textContent?.replace(/\s/g, '') || null,
+          condition: condition?.textContent?.replace(/\n/g, '') || null,
         };
       });
     });

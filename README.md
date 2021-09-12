@@ -36,5 +36,5 @@ Check the latest syntax for RxJS and try to score a cheap oled TV in Amazon Ware
 
 Example
 
-- `EMAIL_FROM=xxx EMAIL_TO=foo@gmail.com EMAIL_USER=bar@gmail.com EMAIL_PASSWORD=12345 yarn run startyarn start` will fire the server and crawl for deals infinitely
+- You could either do `EMAIL_FROM=xxx EMAIL_TO=foo@gmail.com EMAIL_USER=bar@gmail.com EMAIL_PASSWORD=12345 yarn start` or create a .env file and add the variables in it to fire the server and crawl for deals infinitely
 - `yarn cleanStorage` will reset the storage so already notified deals will be retriggered on match

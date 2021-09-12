@@ -12,8 +12,8 @@ const send = (
   subject: string,
   description: string,
   attachments: EmailAttachment[] = []
-): Promise<SentMessageInfo> =>
-  nodemailer.createTransport(config.smtpConfig).sendMail({
+): Promise<SentMessageInfo> => {
+  return nodemailer.createTransport(config.smtpConfig).sendMail({
     from: config.from,
     to: config.to,
     subject,
@@ -23,5 +23,6 @@ const send = (
       content,
     })),
   });
+};
 
 export default send;

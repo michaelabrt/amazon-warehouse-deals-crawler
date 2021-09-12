@@ -1,10 +1,12 @@
 import queries from './queries';
 
+require('dotenv').config();
+
 const config = {
   productQueries: queries,
   puppeteer: {
     devtools: process.env.DEBUG === 'true',
-    dumpio: true,
+    args: ['--disable-gpu'],
   },
   /**
    * Every how often we crawl all pages
